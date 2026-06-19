@@ -1,3 +1,6 @@
+import sys
+print("Python Version:", sys.version)
+print("Python Executable:", sys.executable)
 import tkinter as tk
 from tkinter import scrolledtext
 from datetime import datetime
@@ -146,6 +149,64 @@ def get_response(text):
     else:
 
         return "I understand your message."
+def log_conversation(user_text, bot_text):
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    with open(
+        "conversation_log.txt",
+        "a",
+        encoding="utf-8"
+    ) as file:
+
+        file.write(
+            f"[{timestamp}] User: {user_text}\n"
+        )
+
+        file.write(
+            f"[{timestamp}] Jarvis: {bot_text}\n\n"
+        )
+def log_conversation(user_text, bot_text):
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    with open("conversation_log.txt", "a", encoding="utf-8") as file:
+
+        file.write(f"[{timestamp}] User: {user_text}\n")
+        file.write(f"[{timestamp}] Jarvis: {bot_text}\n\n")
+def listen_voice():
+
+    r = sr.Recognizer()
+
+    try:
+
+        with sr.Microphone() as source:
+
+            chat_area.insert(
+                tk.END,
+                "🎤 Listening...\n"
+            )
+
+            chat_area.see(tk.END)
+
+            r.adjust_for_ambient_noise(source)
+
+            audio = r.listen(source)
+
+        text = r.recognize_google(audio)
+
+        entry.delete(0, tk.END)
+
+        entry.insert(0, text)
+
+        send_message()
+
+    except Exception as e:
+
+        chat_area.insert(
+            tk.END,
+            f"Voice Error: {e}\n"
+        )
 
 # -----------------------------
 # Send Message
@@ -161,6 +222,13 @@ def send_message():
         tk.END,
         f"You: {user_text}\n"
     )
+    response = get_response(user_text)
+    log_conversation(user_text, response)
+
+    log_conversation(
+    user_text,
+    response
+    )
 
     response = get_response(user_text)
 
@@ -174,6 +242,8 @@ def send_message():
     speak(response)
 
     entry.delete(0, tk.END)
+    print("You:", user_text)
+    print("Jarvis:", response)
 
 # -----------------------------
 # Clear Chat
@@ -357,16 +427,16 @@ clear_button = tk.Button(
     fg="white",
     command=clear_chat
 )
-
 voice_button = tk.Button(
-    button_frame,
+    root,
     text="🎤 Voice",
-    bg="#0078D7",
+    bg="#28A745",
     fg="white",
-    command=voice_input
+    font=("Arial",12),
+    command=listen_voice
 )
 
-voice_button.grid(row=0, column=3, padx=5)
+voice_button.pack(pady=5)
 clear_button.grid(row=0, column=2, padx=5)
 
 # -----------------------------

@@ -18,14 +18,15 @@ def login():
     root.destroy()
 
     subprocess.Popen(
-        [
-            "py",
-            "main.py",
-            name,
-            roll,
-            dept
-        ]
-    )
+    [
+        "py",
+        "-3.12",
+        "main.py",
+        name,
+        roll,
+        dept
+    ]
+)
 
 root = tk.Tk()
 
